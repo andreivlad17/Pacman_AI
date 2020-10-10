@@ -97,21 +97,23 @@ def depthFirstSearch(problem):
     origin = problem.getStartState()
     visited = []
 
-    originInfoTuple = (origin, [])
-    nodeStack.push(originInfoTuple)
+    originInfo = (origin, [])
+    nodeStack.push(originInfo)
 
     while not nodeStack.isEmpty():
+        # Checking each node's adjacency
         currentNode, actions = nodeStack.pop()
         if currentNode not in visited:
             visited.append(currentNode)
 
+            # If the current node is the target point return the directions list
             if problem.isGoalState(currentNode):
                 return actions
 
             for nextNode, action, cost in problem.getSuccessors(currentNode):
                 nextAction = actions + [action]
-                nextMoveInfoTuple = (nextNode, nextAction)
-                nodeStack.push(nextMoveInfoTuple)
+                nextDecisionInfo = (nextNode, nextAction)
+                nodeStack.push(nextDecisionInfo)
 
 
 def breadthFirstSearch(problem):
