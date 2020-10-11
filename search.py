@@ -47,17 +47,17 @@ class SearchProblem:
           state: Search state
 
         For a given state, this should return a list of triples, (successor,
-        action, stepCost), where 'successor' is a successor to the current
-        state, 'action' is the action required to get there, and 'stepCost' is
+        state, stepCost), where 'successor' is a successor to the current
+        state, 'state' is the state required to get there, and 'stepCost' is
         the incremental cost of expanding to that successor.
         """
         util.raiseNotDefined()
 
-    def getCostOfActions(self, actions):
+    def getCostOfstates(self, states):
         """
-         actions: A list of actions to take
+         states: A list of states to take
 
-        This method returns the total cost of a particular sequence of actions.
+        This method returns the total cost of a particular sequence of states.
         The sequence must be composed of legal moves.
         """
         util.raiseNotDefined()
@@ -78,7 +78,7 @@ def depthFirstSearch(problem):
     """
     Search the deepest nodes in the search tree first.
 
-    Your search algorithm needs to return a list of actions that reaches the
+    Your search algorithm needs to return a list of states that reaches the
     goal. Make sure to implement a graph search algorithm.
 
     To get started, you might want to try some of these simple commands to
@@ -88,9 +88,8 @@ def depthFirstSearch(problem):
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
-
     # Checks if the starting point is the target point
-    if problem.isGoalState(problem.getStartState):
+    if problem.isGoalState(problem.getStartState()):
         return []
 
     nodeStack = util.Stack()
@@ -101,19 +100,21 @@ def depthFirstSearch(problem):
     nodeStack.push(originInfo)
 
     while not nodeStack.isEmpty():
-        # Checking each node's adjacency
-        currentNode, actions = nodeStack.pop()
-        if currentNode not in visited:
-            visited.append(currentNode)
+        currentNode, states = nodeStack.pop()  # Receiving each node's info to be checked
+        if currentNode not in visited:  # Appends the already visited nodes so they can be skipped in the
+            visited.append(currentNode)  # next iteration
 
-            # If the current node is the target point return the directions list
+            # Returns the final directions list when it reaches the target point
             if problem.isGoalState(currentNode):
-                return actions
+                return states
 
-            for nextNode, action, cost in problem.getSuccessors(currentNode):
-                nextAction = actions + [action]
-                nextDecisionInfo = (nextNode, nextAction)
-                nodeStack.push(nextDecisionInfo)
+            for nextNode, state, cost in problem.getSuccessors(currentNode):
+                nextState = states + [state]  # Creating the decisions list by appending the current state
+                nextDecisionInfo = (nextNode, nextState)  # The new step tuple
+                # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
+                nodeStack.push(nextDecisionInfo)  # Pushing the adjacent nodes to the stack
+
+    util.raiseNotDefined()
 
 
 def breadthFirstSearch(problem):
@@ -124,7 +125,32 @@ def breadthFirstSearch(problem):
 
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
-    "*** YOUR CODE HERE ***"
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    nodesPriorityQueue = util.PriorityQueue()
+    origin = problem.getStartState()
+    visited = []
+
+    originInfo = (origin, [], 0)                # Setting the initial cost to 0
+    nodesPriorityQueue.push(originInfo, 0)      # The start point has priority 0
+
+    while not nodesPriorityQueue.isEmpty():
+        currentNode, states, currentCost = nodesPriorityQueue.pop()  # Receiving each node's info to be checked
+        if currentNode not in visited:  # Appends the already visited nodes so they can be skipped in the
+            visited.append(currentNode)  # next iteration
+
+            # Returns the final directions list when it reaches the target point
+            if problem.isGoalState(currentNode):
+                return states
+
+            for nextNode, state, cost in problem.getSuccessors(currentNode):
+                priority = currentCost + cost   # Updating each node's priority based on its cost
+                nextState = states + [state]  # Creating the decisions list by appending the current state
+                nextDecisionInfo = (nextNode, nextState, priority)  # The new step tuple
+                # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
+                nodesPriorityQueue.push(nextDecisionInfo, priority)  # Pushing the adjacent nodes to the stack
+
     util.raiseNotDefined()
 
 
