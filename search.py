@@ -88,6 +88,8 @@ def depthFirstSearch(problem):
     print("Start:", problem.getStartState())
     print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
     print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+
+    # """
     # Checks if the starting point is the target point
     if problem.isGoalState(problem.getStartState()):
         return []
@@ -96,25 +98,31 @@ def depthFirstSearch(problem):
     origin = problem.getStartState()
     visited = []
 
-    originInfo = (origin, [])
+    originInfo = (origin, [], 0)
     nodeStack.push(originInfo)
 
     while not nodeStack.isEmpty():
-        currentNode, states = nodeStack.pop()  # Receiving each node's info to be checked
+        currentNode, states, currentCost = nodeStack.pop()  # Receiving each node's info to be checked
+
+        # Returns the final directions list when it reaches the target point
+        if problem.isGoalState(currentNode):
+            return states
+
         if currentNode not in visited:  # Appends the already visited nodes so they can be skipped in the
             visited.append(currentNode)  # next iteration
 
-            # Returns the final directions list when it reaches the target point
-            if problem.isGoalState(currentNode):
-                return states
-
             for nextNode, state, cost in problem.getSuccessors(currentNode):
-                nextState = states + [state]  # Creating the decisions list by appending the current state
-                nextDecisionInfo = (nextNode, nextState)  # The new step tuple
-                # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
-                nodeStack.push(nextDecisionInfo)  # Pushing the adjacent nodes to the stack
+                if nextNode not in visited:
+                    nextState = states + [state]  # Creating the decisions list by appending the current state
+                    nextDecisionInfo = (nextNode, nextState, cost)  # The new step tuple
+                    # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
+                    nodeStack.push(nextDecisionInfo)  # Pushing the adjacent nodes to the stack
 
-    util.raiseNotDefined()
+    """
+    DFSStack = util.Stack()
+    return generalDfsUcs(problem, DFSStack)
+    """
+    return False
 
 
 def breadthFirstSearch(problem):
@@ -139,6 +147,7 @@ def breadthFirstSearch(problem):
                 frontier.push(child_tuple)
     # error
 
+
 def uniformCostSearch(problem):
     """Search the node of least total cost first."""
     if problem.isGoalState(problem.getStartState()):
@@ -148,8 +157,8 @@ def uniformCostSearch(problem):
     origin = problem.getStartState()
     visited = []
 
-    originInfo = (origin, [], 0)                # Setting the initial cost to 0
-    nodesPriorityQueue.push(originInfo, 0)      # The start point has priority 0
+    originInfo = (origin, [], 0)  # Setting the initial cost to 0
+    nodesPriorityQueue.push(originInfo, 0)  # The start point has priority 0
 
     while not nodesPriorityQueue.isEmpty():
         currentNode, states, currentCost = nodesPriorityQueue.pop()  # Receiving each node's info to be checked
@@ -161,11 +170,45 @@ def uniformCostSearch(problem):
                 return states
 
             for nextNode, state, cost in problem.getSuccessors(currentNode):
-                priority = currentCost + cost   # Updating each node's priority based on its cost
+                priority = currentCost + cost  # Updating each node's priority based on its cost
                 nextState = states + [state]  # Creating the decisions list by appending the current state
                 nextDecisionInfo = (nextNode, nextState, priority)  # The new step tuple
                 # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
                 nodesPriorityQueue.push(nextDecisionInfo, priority)  # Pushing the adjacent nodes to the stack
+
+    """
+    UCSPriorityQueue = util.PriorityQueue()
+    return generalDfsUcs(problem, UCSPriorityQueue)
+    """
+    return False
+
+def generalDfsUcs(problem, dataStructure):
+    """Search the node of least total cost first."""
+    if problem.isGoalState(problem.getStartState()):
+        return []
+
+    origin = problem.getStartState()
+    visited = []
+
+    originInfo = (origin, [], 0)  # Setting the initial cost to 0
+    dataStructure.push(originInfo, 0)  # The start point has priority 0
+
+    while not dataStructure.isEmpty():
+        currentNode, states, currentCost = dataStructure.pop()  # Receiving each node's info to be checked
+
+        if currentNode not in visited:  # Appends the already visited nodes so they can be skipped in the
+            visited.append(currentNode)  # next iteration
+
+            # Returns the final directions list when it reaches the target point
+            if problem.isGoalState(currentNode):
+                return states
+
+            for nextNode, state, cost in problem.getSuccessors(currentNode):
+                priority = currentCost + cost  # Updating each node's priority based on its cost
+                nextState = states + [state]  # Creating the decisions list by appending the current state
+                nextDecisionInfo = (nextNode, nextState, priority)  # The new step tuple
+                # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
+                dataStructure.push(nextDecisionInfo, priority)  # Pushing the adjacent nodes to the stack
 
     util.raiseNotDefined()
 
