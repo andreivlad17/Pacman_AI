@@ -332,7 +332,9 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
+        """
         successors = []
+        (x, y), visited = state
 
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -342,17 +344,47 @@ class CornersProblem(search.SearchProblem):
             #   nextX, nextY = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextX][nextY]
 
-            (x, y), visited = state
             dx, dy = Actions.directionToVector(action)
             nextX, nextY = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextX][nextY]
-            nextCoord = (nextX, nextY)
 
             if hitsWall is False:
+                nextCoord = (nextX, nextY)
+                visitedPrime = visited
                 if (nextCoord not in visited) and (nextCoord in self.corners):
-                    visited.append(nextCoord)
+                    visitedPrime.append(nextCoord)
 
-                successorInfo = (nextCoord, visited)
+                successorInfo = (nextCoord, visitedPrime)
+                successor = (successorInfo, action, 1)
+                successors.append(successor)
+
+        self._expanded += 1  # DO NOT CHANGE
+        return successors
+        """
+        successors = []
+
+        (x, y), visitedCorners = state
+
+        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
+            # Add a successor state to the successor list if the action is legal
+            # Here's a code snippet for figuring out whether a new position hits a wall:
+            #   x,y = currentPosition
+            #   dx, dy = Actions.directionToVector(action)
+            #   nextx, nexty = int(x + dx), int(y + dy)
+            #   hitsWall = self.walls[nextx][nexty]
+
+            dx, dy = Actions.directionToVector(action)
+            nextx, nexty = int(x + dx), int(y + dy)
+            hitsWall = self.walls[nextx][nexty]
+
+            nextCoord = (nextx, nexty)
+
+            if hitsWall is False:
+                successorVisitedCorners = list(visitedCorners)
+                if (nextCoord not in visitedCorners) and (nextCoord in self.corners):
+                    successorVisitedCorners.append(nextCoord)
+
+                successorInfo = (nextCoord, successorVisitedCorners)
                 successor = (successorInfo, action, 1)
                 successors.append(successor)
 
