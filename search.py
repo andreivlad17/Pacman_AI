@@ -182,6 +182,7 @@ def uniformCostSearch(problem):
     """
     return False
 
+
 def generalDfsUcs(problem, dataStructure):
     """Search the node of least total cost first."""
     if problem.isGoalState(problem.getStartState()):
@@ -222,10 +223,32 @@ def nullHeuristic(state, problem=None):
 
 
 def aStarSearch(problem, heuristic=nullHeuristic):
-    """Search the node that has the lowest combined cost and heuristic first."""
-    "*** YOUR CODE HERE ***"
-    util.raiseNotDefined()
+    """Search the node that has the lowest combined cost and heuristic first.
+     Priority queue retrieve the lowest-priority item"""
 
+    node = problem.getStartState()
+    if problem.isGoalState(node):
+        return []
+    frontier = util.PriorityQueue()
+    node_tuple = (node, [])  # tuple with current state and its path from initial node to it
+    frontier.push(node_tuple, 0)  # inserting first node_tuple with priority 0
+    explored = set()
+
+    while not frontier.isEmpty():
+        node, parent_path = frontier.pop()
+        if problem.isGoalState(node):
+            return parent_path
+        if node not in explored:
+            explored.add(node)  # mark child node as visited if it's not visited
+
+            for child in problem.getSuccessors(node):  # for every successors
+                if child[0] not in explored:  # if node is explored don't compute its new path and its new priority
+                    child_path = parent_path + [child[1]]  # update the child's path from initial node to it
+                    path_priority = problem.getCostOfActions(child_path) + heuristic(child[0], problem)  # computing
+                    # priority f = g(node cost) + h(heuristic)
+                    child_tuple = (child[0], child_path)
+                    frontier.push(child_tuple, path_priority)
+    # error
 
 # Abbreviations
 bfs = breadthFirstSearch
