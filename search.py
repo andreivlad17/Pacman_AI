@@ -85,12 +85,10 @@ def depthFirstSearch(problem):
     understand the search problem that is being passed in:
     """
 
-    print("Start:", problem.getStartState())
-    print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
-    print("Start's successors:", problem.getSuccessors(problem.getStartState()))
+    # print("Start:", problem.getStartState())
+    # print("Is the start a goal?", problem.isGoalState(problem.getStartState()))
+    # print("Start's successors:", problem.getSuccessors(problem.getStartState()))
 
-    # """
-    # Checks if the starting point is the target point
     if problem.isGoalState(problem.getStartState()):
         return []
 
@@ -118,11 +116,7 @@ def depthFirstSearch(problem):
                     # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
                     nodeStack.push(nextDecisionInfo)  # Pushing the adjacent nodes to the stack
 
-    """
-    DFSStack = util.Stack()
-    return generalDfsUcs(problem, DFSStack)
-    """
-    return False
+    return []
 
 
 def breadthFirstSearch(problem):
@@ -133,7 +127,7 @@ def breadthFirstSearch(problem):
     frontier = util.Queue()
     node_tuple = (node, [])  # tuple with current state and its path from initial node to it
     frontier.push(node_tuple)
-    explored = {node}
+    explored = [node]
 
     while not frontier.isEmpty():
         node, parent_path = frontier.pop()  # the shallowest node in frontier and its path from starting node to it
@@ -142,7 +136,7 @@ def breadthFirstSearch(problem):
 
         for child in problem.getSuccessors(node):
             if child[0] not in explored:
-                explored.add(child[0])  # mark child node as visited if it's not visited
+                explored.append(child[0])  # mark child node as visited if it's not visited
                 child_tuple = (child[0], parent_path + [child[1]])  # update the child's path from initial node to it
                 frontier.push(child_tuple)
     # error
@@ -180,7 +174,7 @@ def uniformCostSearch(problem):
     UCSPriorityQueue = util.PriorityQueue()
     return generalDfsUcs(problem, UCSPriorityQueue)
     """
-    return False
+    return []
 
 
 def generalDfsUcs(problem, dataStructure):
@@ -249,6 +243,7 @@ def aStarSearch(problem, heuristic=nullHeuristic):
                     child_tuple = (child[0], child_path)
                     frontier.push(child_tuple, path_priority)
     # error
+
 
 # Abbreviations
 bfs = breadthFirstSearch
