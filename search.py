@@ -92,29 +92,29 @@ def depthFirstSearch(problem):
     if problem.isGoalState(problem.getStartState()):
         return []
 
-    nodeStack = util.Stack()
+    frontier = util.Stack()
     origin = problem.getStartState()
-    visited = []
+    explored = []
 
     originInfo = (origin, [], 0)
-    nodeStack.push(originInfo)
+    frontier.push(originInfo)
 
-    while not nodeStack.isEmpty():
-        currentNode, states, currentCost = nodeStack.pop()  # Receiving each node's info to be checked
+    while not frontier.isEmpty():
+        currentNode, states, currentCost = frontier.pop()  # Receiving each node's info to be checked
 
         # Returns the final directions list when it reaches the target point
         if problem.isGoalState(currentNode):
             return states
 
-        if currentNode not in visited:  # Appends the already visited nodes so they can be skipped in the
-            visited.append(currentNode)  # next iteration
+        if currentNode not in explored:  # Appends the already explored nodes so they can be skipped in the
+            explored.append(currentNode)  # next iteration
 
             for nextNode, state, cost in problem.getSuccessors(currentNode):
-                if nextNode not in visited:
+                if nextNode not in explored:
                     nextState = states + [state]  # Creating the decisions list by appending the current state
                     nextDecisionInfo = (nextNode, nextState, cost)  # The new step tuple
                     # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
-                    nodeStack.push(nextDecisionInfo)  # Pushing the adjacent nodes to the stack
+                    frontier.push(nextDecisionInfo)  # Pushing the adjacent nodes to the stack
 
     return []
 
@@ -147,17 +147,17 @@ def uniformCostSearch(problem):
     if problem.isGoalState(problem.getStartState()):
         return []
 
-    nodesPriorityQueue = util.PriorityQueue()
+    frontier = util.PriorityQueue()
     origin = problem.getStartState()
-    visited = []
+    explored = []
 
     originInfo = (origin, [], 0)  # Setting the initial cost to 0
-    nodesPriorityQueue.push(originInfo, 0)  # The start point has priority 0
+    frontier.push(originInfo, 0)  # The start point has priority 0
 
-    while not nodesPriorityQueue.isEmpty():
-        currentNode, states, currentCost = nodesPriorityQueue.pop()  # Receiving each node's info to be checked
-        if currentNode not in visited:  # Appends the already visited nodes so they can be skipped in the
-            visited.append(currentNode)  # next iteration
+    while not frontier.isEmpty():
+        currentNode, states, currentCost = frontier.pop()  # Receiving each node's info to be checked
+        if currentNode not in explored:  # Appends the already explored nodes so they can be skipped in the
+            explored.append(currentNode)  # next iteration
 
             # Returns the final directions list when it reaches the target point
             if problem.isGoalState(currentNode):
@@ -168,44 +168,9 @@ def uniformCostSearch(problem):
                 nextState = states + [state]  # Creating the decisions list by appending the current state
                 nextDecisionInfo = (nextNode, nextState, priority)  # The new step tuple
                 # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
-                nodesPriorityQueue.push(nextDecisionInfo, priority)  # Pushing the adjacent nodes to the stack
+                frontier.push(nextDecisionInfo, priority)  # Pushing the adjacent nodes to the stack
 
-    """
-    UCSPriorityQueue = util.PriorityQueue()
-    return generalDfsUcs(problem, UCSPriorityQueue)
-    """
     return []
-
-
-def generalDfsUcs(problem, dataStructure):
-    """Search the node of least total cost first."""
-    if problem.isGoalState(problem.getStartState()):
-        return []
-
-    origin = problem.getStartState()
-    visited = []
-
-    originInfo = (origin, [], 0)  # Setting the initial cost to 0
-    dataStructure.push(originInfo, 0)  # The start point has priority 0
-
-    while not dataStructure.isEmpty():
-        currentNode, states, currentCost = dataStructure.pop()  # Receiving each node's info to be checked
-
-        if currentNode not in visited:  # Appends the already visited nodes so they can be skipped in the
-            visited.append(currentNode)  # next iteration
-
-            # Returns the final directions list when it reaches the target point
-            if problem.isGoalState(currentNode):
-                return states
-
-            for nextNode, state, cost in problem.getSuccessors(currentNode):
-                priority = currentCost + cost  # Updating each node's priority based on its cost
-                nextState = states + [state]  # Creating the decisions list by appending the current state
-                nextDecisionInfo = (nextNode, nextState, priority)  # The new step tuple
-                # print(" Next state could be ", nextNode, " with action ", state, " and cost ", cost)
-                dataStructure.push(nextDecisionInfo, priority)  # Pushing the adjacent nodes to the stack
-
-    util.raiseNotDefined()
 
 
 def nullHeuristic(state, problem=None):

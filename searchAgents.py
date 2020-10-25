@@ -298,7 +298,6 @@ class CornersProblem(search.SearchProblem):
         # Please add any code here which you would like to use
         # in initializing the problem
         "*** YOUR CODE HERE ***"
-        self.position_dict = {}  # dictionary for saving node's path for efficiency
 
     def getStartState(self):
         """
@@ -418,37 +417,12 @@ def cornersHeuristic(state, problem):
     This function should always return a number that is a lower bound on the
     shortest path from the state to a goal of the problem; i.e.  it should be
     admissible (as well as consistent).
-
-    -> returneaza 0 la goal heuristica
-    -> nu returneaza valoare negativa heuristica
     """
     corners = problem.corners  # These are the corner coordinates
     walls = problem.walls  # These are the walls of the maze, as a Grid (game.py)
 
     "*** YOUR CODE HERE ***"
-    key = state[0]
-
-    if key not in problem.position_dict:  # adding current position node in dictionary
-        problem.position_dict = {key: 0}  # if the node is not there
-        heuristic = 0
-        current_position = state[0]
-
-        unvisited = []
-        for corner in corners:  # constructing the unvisited corners lis
-            if corner not in state[1]:
-                unvisited += [corner]
-
-        while unvisited:
-            distance_corner = []
-            for corner in unvisited:
-                distance = util.manhattanDistance(current_position, corner)
-                distance_corner.append((distance, corner))
-            min_distance, current_corner = min(distance_corner)  # choosing the corner with minimum manhattan distance
-            heuristic += min_distance  # computing the heuristic as sum of minimum distances
-            current_position = current_corner  # updating the current position
-            unvisited.remove(current_corner)  # removing the visited corner
-        problem.position_dict[key] = heuristic  # saving heuristic in dictionary
-    return problem.position_dict[key]
+    return 0  # Default to trivial solution
 
 
 class AStarCornersAgent(SearchAgent):
