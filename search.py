@@ -191,14 +191,14 @@ def aStarSearch(problem, heuristic=nullHeuristic):
     frontier = util.PriorityQueue()
     node_tuple = (node, [])  # tuple with current state and its path from initial node to it
     frontier.push(node_tuple, 0)  # inserting first node_tuple with priority 0
-    explored = set()
+    explored = []
 
     while not frontier.isEmpty():
         node, parent_path = frontier.pop()
         if problem.isGoalState(node):
             return parent_path
         if node not in explored:
-            explored.add(node)  # mark child node as visited if it's not visited
+            explored.append(node)  # mark child node as visited if it's not visited
 
             for child in problem.getSuccessors(node):  # for every successors
                 if child[0] not in explored:  # if node is explored don't compute its new path and its new priority
