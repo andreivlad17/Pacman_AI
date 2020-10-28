@@ -363,7 +363,7 @@ class CornersProblem(search.SearchProblem):
         """
         successors = []
 
-        (x, y), visitedCorners = state
+        (x, y), visited = state
 
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
             # Add a successor state to the successor list if the action is legal
@@ -377,14 +377,12 @@ class CornersProblem(search.SearchProblem):
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
 
-            nextCoord = (nextx, nexty)
-
             if hitsWall is False:
-                successorVisitedCorners = list(visitedCorners)
-                if (nextCoord not in visitedCorners) and (nextCoord in self.corners):
-                    successorVisitedCorners.append(nextCoord)
+                successorVisited = visited[:]  #
+                if ((nextx, nexty) not in visited) and ((nextx, nexty) in self.corners):
+                    successorVisited.append((nextx, nexty))
 
-                successorInfo = (nextCoord, successorVisitedCorners)
+                successorInfo = ((nextx, nexty), successorVisited)
                 successor = (successorInfo, action, 1)
                 successors.append(successor)
 
@@ -506,7 +504,7 @@ class FoodSearchProblem:
         return cost
 
 
-class AStarFoodSearchAgent(SearchAgent):
+class MyPositionSearchProblem(SearchAgent):
     "A SearchAgent for FoodSearchProblem using A* and your foodHeuristic"
 
     def __init__(self):
@@ -542,9 +540,28 @@ def foodHeuristic(state, problem):
     Subsequent calls to this heuristic can access
     problem.heuristicInfo['wallCount']
     """
+
     position, foodGrid = state
-    "*** YOUR CODE HERE ***"
-    return 0
+    foodList = foodGrid.asList()
+
+    totalCost = 0
+
+    distances = [0]
+
+    """
+    # Autograder 2/4:
+    # returneaza lungimea efectiva a listei de puncte cu food
+    return len(foodList)
+    """
+
+    # Autograder 3/4: 9551 noduri expandate, pica food_heuristic_grade_tricky.test
+    # adauga toate distantele Manhattan dintre pozitia curenta si fiecare food din grid
+    # intr-o lista si returneaza maximul dintre ele
+
+    for food in foodList:
+        distances.append(util.manhattanDistance(position, food))
+
+    return max(distances)
 
 
 class ClosestDotSearchAgent(SearchAgent):
