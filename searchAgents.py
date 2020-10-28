@@ -594,7 +594,7 @@ class ClosestDotSearchAgent(SearchAgent):
         problem = AnyFoodSearchProblem(gameState)
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        return search.astar(problem)  # performs a* search on the AnyFoodSearchProblem
 
 
 class AnyFoodSearchProblem(PositionSearchProblem):
@@ -631,7 +631,8 @@ class AnyFoodSearchProblem(PositionSearchProblem):
         x, y = state
 
         "*** YOUR CODE HERE ***"
-        util.raiseNotDefined()
+        # util.raiseNotDefined()
+        return self.food[x][y]  # checks if the current position is food(via getFood from pacman.py)
 
 
 def mazeDistance(point1, point2, gameState):
