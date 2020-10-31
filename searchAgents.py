@@ -549,15 +549,24 @@ def foodHeuristic(state, problem):
     distances = [0]
 
     """
-    # Autograder 2/4:
-    # returneaza lungimea efectiva a listei de puncte cu food
+    # Autograder 2/4: 12517 noduri expandate, pica food_heuristic_grade_tricky.test, timp mare de executie
+    # returneaza lungimea efectiva a listei de food points
     return len(foodList)
     """
 
-    # Autograder 3/4: 9551 noduri expandate, pica food_heuristic_grade_tricky.test
+    """
+    # Autograder 5/4: 4137 noduri expandate, dar timp foarte mare de executie
+    # calculeaza toate mazeDistance dintre punctul curent si fiecare food point
+    # returneaza maximul dintre acestea, fiind adaugate in fiecare iteratie intr-o lista
+    for food in foodList:
+        distances.append(mazeDistance(position, food, problem.startingGameState))
+
+    return max(distances)
+    """
+
+    # Autograder 3/4: 9551 noduri expandate, pica food_heuristic_grade_tricky.test, timp putin mai mic de executie
     # adauga toate distantele Manhattan dintre pozitia curenta si fiecare food din grid
     # intr-o lista si returneaza maximul dintre ele
-
     for food in foodList:
         distances.append(util.manhattanDistance(position, food))
 
