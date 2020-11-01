@@ -307,6 +307,8 @@ class CornersProblem(search.SearchProblem):
         origin = self.startingPosition
         actions = []
         startTuple = (origin, actions)
+        # Returns the starting grid coordinates and the list of actions,
+        # which is empty at first
         return startTuple
 
     def isGoalState(self, state):
@@ -315,12 +317,18 @@ class CornersProblem(search.SearchProblem):
         """
         currentPosition, visited = state
 
+        # If the current position is not in the corners list, then there is
+        # no point in checking it anymore
         if currentPosition not in self.corners:
             return False
         else:
+            # If it is in the corners list, but it hasn't been visited yet
+            # it is appended in a list containing all the visited corners
             if currentPosition not in visited:
                 visited.append(currentPosition)
-            return len(visited) == 4  # Checks if Pacman has visited all 4 corners
+            # If the visited list contains all 4 corners, then the search
+            # problem is complete
+            return len(visited) == 4
 
     def getSuccessors(self, state):
         """
@@ -332,37 +340,10 @@ class CornersProblem(search.SearchProblem):
             state, 'action' is the action required to get there, and 'stepCost'
             is the incremental cost of expanding to that successor
         """
-        """
-        successors = []
-        (x, y), visited = state
-
-        for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
-            # Add a successor state to the successor list if the action is legal
-            # Here's a code snippet for figuring out whether a new position hits a wall:
-            #   x,y = currentPosition
-            #   dx, dy = Actions.directionToVector(action)
-            #   nextX, nextY = int(x + dx), int(y + dy)
-            #   hitsWall = self.walls[nextX][nextY]
-
-            dx, dy = Actions.directionToVector(action)
-            nextX, nextY = int(x + dx), int(y + dy)
-            hitsWall = self.walls[nextX][nextY]
-
-            if hitsWall is False:
-                nextCoord = (nextX, nextY)
-                visitedPrime = visited
-                if (nextCoord not in visited) and (nextCoord in self.corners):
-                    visitedPrime.append(nextCoord)
-
-                successorInfo = (nextCoord, visitedPrime)
-                successor = (successorInfo, action, 1)
-                successors.append(successor)
-
-        self._expanded += 1  # DO NOT CHANGE
-        return successors
-        """
         successors = []
 
+        # Getting the necessary info regarding the current state, such as
+        # the current grid coordinates and the visited list
         (x, y), visited = state
 
         for action in [Directions.NORTH, Directions.SOUTH, Directions.EAST, Directions.WEST]:
@@ -373,15 +354,25 @@ class CornersProblem(search.SearchProblem):
             #   nextx, nexty = int(x + dx), int(y + dy)
             #   hitsWall = self.walls[nextx][nexty]
 
+            # Calculates the next position based on the current info
             dx, dy = Actions.directionToVector(action)
             nextx, nexty = int(x + dx), int(y + dy)
             hitsWall = self.walls[nextx][nexty]
 
+            # The algorithm avoids moving Pacman in wall locations
+            # If the next action won't hit a wall, then we'll initialize a temporary
+            # list as the already visited nodes list, where not-yet-visited corners will
+            # be appended
+            # The point of using the temporary list is to avoid overriding the
+            # initial visited list and keeping it for further use
             if hitsWall is False:
-                successorVisited = visited[:]  #
+                successorVisited = visited[:]
                 if ((nextx, nexty) not in visited) and ((nextx, nexty) in self.corners):
                     successorVisited.append((nextx, nexty))
 
+                # Creating the successor information tuple containing the next node
+                # coordinates, visited successor list, current action and cost, then
+                # appending it in the successors list to be returned
                 successorInfo = ((nextx, nexty), successorVisited)
                 successor = (successorInfo, action, 1)
                 successors.append(successor)
